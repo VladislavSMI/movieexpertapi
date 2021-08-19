@@ -1,10 +1,13 @@
 import React, { Fragment } from "react";
+import { Link } from "react-router-dom";
 
-export const GetMovieInfo = () => {
+export const GetMovieInfo = ({imdbID}) => {
   return (
     <Fragment>
-      <span className="small mx">More Info</span>
-      <i className="fas fa-info" style={{ color: "orange" }}></i>
+      <Link to={`/movie/${imdbID}`}>
+        <span className="small mx">More Info</span>
+        <i className="fas fa-info" style={{ color: "orange" }}></i>
+      </Link>
     </Fragment>
   );
 };

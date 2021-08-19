@@ -19,7 +19,7 @@ export const MovieList = ({
   return (
     <Fragment>
       {movies.map((movie, index) => (
-        <div key={index} className="image-container flex-center m">
+        <div key={index} className="image-container flex-center m" style={{minHeight: "300px"}}>
           {movie.Poster === "N/A" ? (
             <img src={spinner} alt={movie.Title} style={{ width: "200px" }} />
           ) : (
@@ -30,10 +30,10 @@ export const MovieList = ({
             />
           )}
           <div
-            onClick={() => handleMovieInfoClick(movie.imdbID)}
+            // onClick={() => handleMovieInfoClick(movie.imdbID)}
             className="overlay top-left flex-center"
           >
-            <MovieInfoComponent />
+            <MovieInfoComponent imdbID={movie.imdbID}/>
           </div>
           <div
             onClick={() => handleRemoveMovieClick(movie)}

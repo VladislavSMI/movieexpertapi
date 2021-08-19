@@ -1,6 +1,7 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
+import { Link } from "react-router-dom";
 
-export const MovieInfo = ({ movieInfo }) => {
+export const MovieInfo = ({ movieInfo, getmovieInfo, match }) => {
   const {
     Poster,
     Title,
@@ -17,13 +18,21 @@ export const MovieInfo = ({ movieInfo }) => {
     Ratings,
   } = movieInfo;
 
+  useEffect(() => {
+    getmovieInfo(match.params.imdbID);
+    // eslint-disable-next-line
+  }, []);
+
   return (
     <Fragment>
       <div className="card grid-2">
         <div className="all-center">
+          <Link to="/" className="btn btn-primary-darker m-2">
+            Back To Search
+          </Link>
           <img src={Poster} alt={Title} style={{ width: "250px" }} />
         </div>
-        <div>
+        <div className="all-center">
           <h1>{Title}</h1>
           <p>{Plot}</p>
           <div className="list">
@@ -42,21 +51,22 @@ export const MovieInfo = ({ movieInfo }) => {
         </div>
       </div>
       <div className="card text-center">
-        {Ratings.map((rating, idx) =>
-          +rating.Value.charAt(0) >= 7 ? (
-            <div key={idx} className="badge badge-success">
-              {rating.Source}: {rating.Value}
-            </div>
-          ) : +rating.Value.charAt(0) >= 5 ? (
-            <div key={idx} className="badge badge-attention">
-              {rating.Source}: {rating.Value}
-            </div>
-          ) : (
-            <div key={idx} className="badge badge-danger">
-              {rating.Source}: {rating.Value}
-            </div>
-          )
-        )}
+        {Ratings &&
+          Ratings.map((rating, idx) =>
+            +rating.Value.charAt(0) >= 7 ? (
+              <div key={idx} className="badge badge-success">
+                {rating.Source}: {rating.Value}
+              </div>
+            ) : +rating.Value.charAt(0) >= 5 ? (
+              <div key={idx} className="badge badge-attention">
+                {rating.Source}: {rating.Value}
+              </div>
+            ) : (
+              <div key={idx} className="badge badge-danger">
+                {rating.Source}: {rating.Value}
+              </div>
+            )
+          )}
       </div>
     </Fragment>
   );

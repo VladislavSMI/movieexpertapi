@@ -1,4 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import axios from "axios";
 
 import { Navbar } from "./components/layout/Navbar";
@@ -134,64 +135,89 @@ export const App = () => {
   };
 
   return (
-    <div>
-      <Navbar />
-      <div className="container text-center">
-        <Search searchValue={searchValue} setSearchValue={setSearchValue} />
+    <Router>
+      <div>
+        <Navbar />
+        <div className="container text-center">
+          <Switch>
+            <Route
+              exact
+              path="/"
+              render={(props) => (
+                <Fragment>
+                  <Search
+                    searchValue={searchValue}
+                    setSearchValue={setSearchValue}
+                  />
 
-        <MovieListHeading heading={"Results"} />
-        <div className="flex-row border" style={{ minHeight: "300px" }}>
-          <MovieList
-            movies={movies}
-            favouriteComponent={AddWatchNext}
-            handleFavouriteClick={addMovieWatchNext}
-            movieInfoComponent={GetMovieInfo}
-            handleMovieInfoClick={getMovieInfo}
-            removeMovieComponent={RemoveMovie}
-            handleRemoveMovieClick={removeMovie}
-            displayFavouriteComponent={true}
-          />
-        </div>
+                  <MovieListHeading heading={"Results"} />
+                  <div
+                    className="flex-row border"
+                    style={{ minHeight: "300px" }}
+                  >
+                    <MovieList
+                      movies={movies}
+                      favouriteComponent={AddWatchNext}
+                      handleFavouriteClick={addMovieWatchNext}
+                      movieInfoComponent={GetMovieInfo}
+                      handleMovieInfoClick={getMovieInfo}
+                      removeMovieComponent={RemoveMovie}
+                      handleRemoveMovieClick={removeMovie}
+                      displayFavouriteComponent={true}
+                    />
+                  </div>
 
-        
+                  <MovieListHeading heading={"Watch Next"} />
+                  <div
+                    className="flex-row border"
+                    style={{ minHeight: "300px" }}
+                  >
+                    <MovieList
+                      movies={moviesWatchNext}
+                      favouriteComponent={AddWatched}
+                      handleFavouriteClick={addWatchedMovies}
+                      movieInfoComponent={GetMovieInfo}
+                      handleMovieInfoClick={getMovieInfo}
+                      removeMovieComponent={RemoveMovie}
+                      handleRemoveMovieClick={removeMovieWachtNext}
+                      displayFavouriteComponent={true}
+                    />
+                  </div>
 
-        {Object.keys(movieInfo).length > 0 && (
-          <Fragment>
-            <MovieListHeading heading={"Movie Info"} />
-            <div className="border">
-              <MovieInfo movieInfo={movieInfo} />
-            </div>
-          </Fragment>
-        )}
+                  <MovieListHeading heading={"Watched"} />
+                  <div
+                    className="flex-row border"
+                    style={{ minHeight: "300px" }}
+                  >
+                    <MovieList
+                      movies={watchedMovies}
+                      // favouriteComponent={false}
+                      handleFavouriteClick={removeWatchedMovies}
+                      movieInfoComponent={GetMovieInfo}
+                      handleMovieInfoClick={getMovieInfo}
+                      removeMovieComponent={RemoveMovie}
+                      handleRemoveMovieClick={removeWatchedMovies}
+                      displayFavouriteComponent={false}
+                    />
+                  </div>
+                </Fragment>
+              )}
+            />
 
-        <MovieListHeading heading={"Watch Next"} />
-        <div className="flex-row border" style={{ minHeight: "300px" }}>
-          <MovieList
-            movies={moviesWatchNext}
-            favouriteComponent={AddWatched}
-            handleFavouriteClick={addWatchedMovies}
-            movieInfoComponent={GetMovieInfo}
-            handleMovieInfoClick={getMovieInfo}
-            removeMovieComponent={RemoveMovie}
-            handleRemoveMovieClick={removeMovieWachtNext}
-            displayFavouriteComponent={true}
-          />
-        </div>
-
-        <MovieListHeading heading={"Watched"} />
-        <div className="flex-row border" style={{ minHeight: "300px" }}>
-          <MovieList
-            movies={watchedMovies}
-            // favouriteComponent={false}
-            handleFavouriteClick={removeWatchedMovies}
-            movieInfoComponent={GetMovieInfo}
-            handleMovieInfoClick={getMovieInfo}
-            removeMovieComponent={RemoveMovie}
-            handleRemoveMovieClick={removeWatchedMovies}
-            displayFavouriteComponent={false}
-          />
+            <Route
+              exact
+              path="/movie/:imdbID"
+              render={(props) => (
+                <MovieInfo
+                  {...props}
+                  getmovieInfo={getMovieInfo}
+                  movieInfo={movieInfo}
+                />
+              )}
+            />
+          </Switch>
         </div>
       </div>
-    </div>
+    </Router>
   );
 };
