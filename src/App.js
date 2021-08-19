@@ -1,25 +1,197 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect, Fragment } from "react";
+import axios from "axios";
 
-function App() {
+import { Navbar } from "./components/layout/Navbar";
+import { MovieList } from "./components/movies/MovieList";
+import { MovieListHeading } from "./components/movies/MovieListHeading";
+import { Search } from "./components/movies/Search";
+import { AddWatchNext } from "./components/movies/AddWatchNext";
+import { RemoveMovie } from "./components/movies/RemoveMovie";
+import { GetMovieInfo } from "./components/movies/GetMovieInfo";
+import { MovieInfo } from "./components/movies/MovieInfo";
+import { AddWatched } from "./components/movies/AddWatched";
+
+import "./App.css";
+
+export const App = () => {
+  const [movies, setMovies] = useState([]);
+  const [moviesWatchNext, setMoviesWatchNext] = useState([]);
+  const [movieInfo, setMovieInfo] = useState({});
+  const [watchedMovies, setWatchedMovies] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
+
+  // Search Movies
+  const searchMovies = async (searchValue) => {
+    const res = await axios.get(
+      `http://www.omdbapi.com/?s=${searchValue}&apikey=dffac5dc`
+    );
+
+    if (res.data.Search) {
+      setMovies(res.data.Search);
+    }
+  };
+
+  useEffect(() => {
+    searchMovies(searchValue);
+  }, [searchValue]);
+
+  // Remove from movies
+  const removeMovie = (movie) => {
+    const newMovieList = movies.filter((mov) => mov.imdbID !== movie.imdbID);
+    setMovies(newMovieList);
+  };
+
+  // Get movie info
+  const getMovieInfo = async (imdbID) => {
+    const res = await axios.get(
+      `https://www.omdbapi.com/?i=${imdbID}&apikey=dffac5dc`
+    );
+
+    if (res.data) {
+      setMovieInfo(res.data);
+    }
+  };
+
+  // Get moviesWatchNext from local storage
+  useEffect(() => {
+    const moviesWatchNext = JSON.parse(
+      localStorage.getItem("react-movie-app-moviesWatchNext")
+    );
+    if (moviesWatchNext) {
+      setMoviesWatchNext(moviesWatchNext);
+    }
+  }, []);
+
+  // Get wachedMovies from local storage
+  useEffect(() => {
+    const watchedMovies = JSON.parse(
+      localStorage.getItem("react-movie-app-watchedMovies")
+    );
+    if (watchedMovies) {
+      setWatchedMovies(watchedMovies);
+    }
+  }, []);
+
+  // Set moviesWatchNext to local storage
+  const saveToLocalStorageMovieWatchNext = (items) => {
+    localStorage.setItem(
+      "react-movie-app-moviesWatchNext",
+      JSON.stringify(items)
+    );
+  };
+
+  // Set watchedMovies to local storage
+  const saveToLocalStorageWatchedMovies = (items) => {
+    localStorage.setItem(
+      "react-movie-app-watchedMovies",
+      JSON.stringify(items)
+    );
+  };
+
+  // Add movieWatchNext
+  const addMovieWatchNext = (movie) => {
+    const uniqueMovieWatchNext = moviesWatchNext.filter(
+      (mov) => mov.imdbID === movie.imdbID
+    );
+
+    if (!uniqueMovieWatchNext.length) {
+      const newMoviesWatchNextList = [movie, ...moviesWatchNext];
+      setMoviesWatchNext(newMoviesWatchNextList);
+      saveToLocalStorageMovieWatchNext(newMoviesWatchNextList);
+    }
+  };
+  // Remove movieWatchNext
+  const removeMovieWachtNext = (movie) => {
+    const newMoviesWatchNextList = moviesWatchNext.filter(
+      (mov) => mov.imdbID !== movie.imdbID
+    );
+
+    setMoviesWatchNext(newMoviesWatchNextList);
+    saveToLocalStorageMovieWatchNext(newMoviesWatchNextList);
+  };
+
+  // Add watchedMovies
+  const addWatchedMovies = (movie) => {
+    const uniqueWatchedMovies = watchedMovies.filter(
+      (mov) => mov.imdbID === movie.imdbID
+    );
+
+    if (!uniqueWatchedMovies.length) {
+      const newWatchedMoviesList = [movie, ...watchedMovies];
+      setWatchedMovies(newWatchedMoviesList);
+      saveToLocalStorageWatchedMovies(newWatchedMoviesList);
+    }
+    removeMovieWachtNext(movie);
+  };
+
+  // Remove watchedMovies
+  const removeWatchedMovies = (movie) => {
+    const newWatchedMovieList = watchedMovies.filter(
+      (mov) => mov.imdbID !== movie.imdbID
+    );
+    setWatchedMovies(newWatchedMovieList);
+    saveToLocalStorageWatchedMovies(newWatchedMovieList);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Navbar />
+      <div className="container text-center">
+        <Search searchValue={searchValue} setSearchValue={setSearchValue} />
+
+        <MovieListHeading heading={"Results"} />
+        <div className="flex-row border" style={{ minHeight: "300px" }}>
+          <MovieList
+            movies={movies}
+            favouriteComponent={AddWatchNext}
+            handleFavouriteClick={addMovieWatchNext}
+            movieInfoComponent={GetMovieInfo}
+            handleMovieInfoClick={getMovieInfo}
+            removeMovieComponent={RemoveMovie}
+            handleRemoveMovieClick={removeMovie}
+            displayFavouriteComponent={true}
+          />
+        </div>
+
+        
+
+        {Object.keys(movieInfo).length > 0 && (
+          <Fragment>
+            <MovieListHeading heading={"Movie Info"} />
+            <div className="border">
+              <MovieInfo movieInfo={movieInfo} />
+            </div>
+          </Fragment>
+        )}
+
+        <MovieListHeading heading={"Watch Next"} />
+        <div className="flex-row border" style={{ minHeight: "300px" }}>
+          <MovieList
+            movies={moviesWatchNext}
+            favouriteComponent={AddWatched}
+            handleFavouriteClick={addWatchedMovies}
+            movieInfoComponent={GetMovieInfo}
+            handleMovieInfoClick={getMovieInfo}
+            removeMovieComponent={RemoveMovie}
+            handleRemoveMovieClick={removeMovieWachtNext}
+            displayFavouriteComponent={true}
+          />
+        </div>
+
+        <MovieListHeading heading={"Watched"} />
+        <div className="flex-row border" style={{ minHeight: "300px" }}>
+          <MovieList
+            movies={watchedMovies}
+            // favouriteComponent={false}
+            handleFavouriteClick={removeWatchedMovies}
+            movieInfoComponent={GetMovieInfo}
+            handleMovieInfoClick={getMovieInfo}
+            removeMovieComponent={RemoveMovie}
+            handleRemoveMovieClick={removeWatchedMovies}
+            displayFavouriteComponent={false}
+          />
+        </div>
+      </div>
     </div>
   );
-}
-
-export default App;
+};
