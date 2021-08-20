@@ -24,9 +24,9 @@ export const App = () => {
   let movieApiKey;
 
   if (process.env.NODE_ENV !== "production") {
-    movieApiKey = process.env.REACT_APP_MOVIE_API_KEY_LOCAL;
+    movieApiKey = process.env.REACT_APP_MOVIE_API_KEY;
   } else {
-    movieApiKey = process.env.REACT_APP_MOVIE_API_KEY_PRODUCTION;
+    movieApiKey = process.env.MOVIE_API_KEY;
   }
 
   // Search Movies
