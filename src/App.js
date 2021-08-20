@@ -32,7 +32,7 @@ export const App = () => {
   // Search Movies
   const searchMovies = async (searchValue) => {
     const res = await axios.get(
-      `http://www.omdbapi.com/?s=${searchValue}&apikey=${movieApiKey}`
+      `https://www.omdbapi.com/?s=${searchValue}&apikey=${movieApiKey}`
     );
 
     if (res.data.Search) {
