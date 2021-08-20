@@ -21,10 +21,18 @@ export const App = () => {
   const [watchedMovies, setWatchedMovies] = useState([]);
   const [searchValue, setSearchValue] = useState("");
 
+  let movieApiKey;
+
+  if (process.env.NODE_ENV !== "production") {
+    movieApiKey = process.env.REACT_APP_MOVIE_API_KEY_LOCAL;
+  } else {
+    movieApiKey = process.env.REACT_APP_MOVIE_API_KEY_PRODUCTION;
+  }
+
   // Search Movies
   const searchMovies = async (searchValue) => {
     const res = await axios.get(
-      `http://www.omdbapi.com/?s=${searchValue}&apikey=dffac5dc`
+      `http://www.omdbapi.com/?s=${searchValue}&apikey=${movieApiKey}`
     );
 
     if (res.data.Search) {
@@ -34,6 +42,7 @@ export const App = () => {
 
   useEffect(() => {
     searchMovies(searchValue);
+    // eslint-disable-next-line
   }, [searchValue]);
 
   // Remove from movies
@@ -45,7 +54,7 @@ export const App = () => {
   // Get movie info
   const getMovieInfo = async (imdbID) => {
     const res = await axios.get(
-      `https://www.omdbapi.com/?i=${imdbID}&apikey=dffac5dc`
+      `https://www.omdbapi.com/?i=${imdbID}&apikey=${movieApiKey}`
     );
 
     if (res.data) {
@@ -149,57 +158,64 @@ export const App = () => {
                     searchValue={searchValue}
                     setSearchValue={setSearchValue}
                   />
+                  {movies.length > 0 && (
+                    <Fragment>
+                      <MovieListHeading heading={"Results"} />
+                      <div
+                        className="flex-row border"
+                        style={{ minHeight: "300px" }}
+                      >
+                        <MovieList
+                          movies={movies}
+                          favouriteComponent={AddWatchNext}
+                          handleFavouriteClick={addMovieWatchNext}
+                          movieInfoComponent={GetMovieInfo}
+                          removeMovieComponent={RemoveMovie}
+                          handleRemoveMovieClick={removeMovie}
+                          displayFavouriteComponent={true}
+                        />
+                      </div>
+                    </Fragment>
+                  )}
 
-                  <MovieListHeading heading={"Results"} />
-                  <div
-                    className="flex-row border"
-                    style={{ minHeight: "300px" }}
-                  >
-                    <MovieList
-                      movies={movies}
-                      favouriteComponent={AddWatchNext}
-                      handleFavouriteClick={addMovieWatchNext}
-                      movieInfoComponent={GetMovieInfo}
-                      handleMovieInfoClick={getMovieInfo}
-                      removeMovieComponent={RemoveMovie}
-                      handleRemoveMovieClick={removeMovie}
-                      displayFavouriteComponent={true}
-                    />
-                  </div>
+                  {moviesWatchNext.length > 0 && (
+                    <Fragment>
+                      <MovieListHeading heading={"Watch Next"} />
+                      <div
+                        className="flex-row border"
+                        style={{ minHeight: "300px" }}
+                      >
+                        <MovieList
+                          movies={moviesWatchNext}
+                          favouriteComponent={AddWatched}
+                          handleFavouriteClick={addWatchedMovies}
+                          movieInfoComponent={GetMovieInfo}
+                          removeMovieComponent={RemoveMovie}
+                          handleRemoveMovieClick={removeMovieWachtNext}
+                          displayFavouriteComponent={true}
+                        />
+                      </div>
+                    </Fragment>
+                  )}
 
-                  <MovieListHeading heading={"Watch Next"} />
-                  <div
-                    className="flex-row border"
-                    style={{ minHeight: "300px" }}
-                  >
-                    <MovieList
-                      movies={moviesWatchNext}
-                      favouriteComponent={AddWatched}
-                      handleFavouriteClick={addWatchedMovies}
-                      movieInfoComponent={GetMovieInfo}
-                      handleMovieInfoClick={getMovieInfo}
-                      removeMovieComponent={RemoveMovie}
-                      handleRemoveMovieClick={removeMovieWachtNext}
-                      displayFavouriteComponent={true}
-                    />
-                  </div>
-
-                  <MovieListHeading heading={"Watched"} />
-                  <div
-                    className="flex-row border"
-                    style={{ minHeight: "300px" }}
-                  >
-                    <MovieList
-                      movies={watchedMovies}
-                      // favouriteComponent={false}
-                      handleFavouriteClick={removeWatchedMovies}
-                      movieInfoComponent={GetMovieInfo}
-                      handleMovieInfoClick={getMovieInfo}
-                      removeMovieComponent={RemoveMovie}
-                      handleRemoveMovieClick={removeWatchedMovies}
-                      displayFavouriteComponent={false}
-                    />
-                  </div>
+                  {watchedMovies.length > 0 && (
+                    <Fragment>
+                      <MovieListHeading heading={"Watched"} />
+                      <div
+                        className="flex-row border"
+                        style={{ minHeight: "300px" }}
+                      >
+                        <MovieList
+                          movies={watchedMovies}
+                          handleFavouriteClick={removeWatchedMovies}
+                          movieInfoComponent={GetMovieInfo}
+                          removeMovieComponent={RemoveMovie}
+                          handleRemoveMovieClick={removeWatchedMovies}
+                          displayFavouriteComponent={false}
+                        />
+                      </div>
+                    </Fragment>
+                  )}
                 </Fragment>
               )}
             />
