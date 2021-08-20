@@ -1,7 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto");
 
-
-
 /* Global Styles */
 :root {
   --primary-color: #0caf97;
@@ -53,6 +51,7 @@ img {
 
 .border {
   border: 2px dotted var(--primary-color-darker);
+  overflow-y: hidden;
 }
 
 /* Utilities */
