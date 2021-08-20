@@ -24,15 +24,15 @@ export const App = () => {
   let movieApiKey;
 
   if (process.env.NODE_ENV !== "production") {
-    movieApiKey = process.env.REACT_APP_MOVIE_API_KEY;
+    movieApiKey = process.env.REACT_APP_MOVIE_API_KEY_LOCAL;
   } else {
-    movieApiKey = process.env.MOVIE_API_KEY;
+    movieApiKey = process.env.REACT_APP_MOVIE_API_KEY_PRODUCTION;
   }
 
   // Search Movies
   const searchMovies = async (searchValue) => {
     const res = await axios.get(
-      `https://www.omdbapi.com/?s=${searchValue}&apikey=${process.env.MOVIE_API_KEY}`
+      `https://www.omdbapi.com/?s=${searchValue}&apikey=${movieApiKey}`
     );
 
     if (res.data.Search) {
@@ -54,7 +54,7 @@ export const App = () => {
   // Get movie info
   const getMovieInfo = async (imdbID) => {
     const res = await axios.get(
-      `https://www.omdbapi.com/?i=${imdbID}&apikey=${process.env.MOVIE_API_KEY}`
+      `https://www.omdbapi.com/?i=${imdbID}&apikey=${movieApiKey}`
     );
 
     if (res.data) {
