@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 export const MovieListHeading = ({ heading }) => {
   return (
@@ -6,4 +7,8 @@ export const MovieListHeading = ({ heading }) => {
       <h1>{heading}</h1>
     </div>
   );
+};
+
+MovieListHeading.propTypes = {
+  heading: PropTypes.string.isRequired,
 };

@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import PropTypes from "prop-types";
 
 import spinner from "../layout/spinner.gif";
 
@@ -53,4 +54,14 @@ export const MovieList = ({
       ))}
     </Fragment>
   );
+};
+
+MovieList.propTypes = {
+  movies: PropTypes.array.isRequired,
+  favouriteComponent: PropTypes.elementType,
+  handleFavouriteClick: PropTypes.func.isRequired,
+  movieInfoComponent: PropTypes.elementType.isRequired,
+  displayFavouriteComponent: PropTypes.bool.isRequired,
+  removeMovieComponent: PropTypes.func.isRequired,
+  handleRemoveMovieClick: PropTypes.func.isRequired,
 };

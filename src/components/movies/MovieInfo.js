@@ -1,7 +1,10 @@
 import React, { Fragment, useEffect } from "react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
-export const MovieInfo = ({ movieInfo, getmovieInfo, match }) => {
+import { Spinner } from "../layout/Spinner";
+
+export const MovieInfo = ({ movieInfo, getmovieInfo, loading, match }) => {
   const {
     Poster,
     Title,
@@ -22,6 +25,8 @@ export const MovieInfo = ({ movieInfo, getmovieInfo, match }) => {
     getmovieInfo(match.params.imdbID);
     // eslint-disable-next-line
   }, []);
+
+  if (loading) return <Spinner />;
 
   return (
     <Fragment>
@@ -70,4 +75,10 @@ export const MovieInfo = ({ movieInfo, getmovieInfo, match }) => {
       </div>
     </Fragment>
   );
+};
+
+MovieInfo.propTypes = {
+  movieInfo: PropTypes.object.isRequired,
+  getmovieInfo: PropTypes.func.isRequired,
+  loading: PropTypes.bool.isRequired,
 };

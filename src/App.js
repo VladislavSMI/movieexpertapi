@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Fragment } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+
 import axios from "axios";
 
 import { Navbar } from "./components/layout/Navbar";
@@ -20,6 +21,7 @@ export const App = () => {
   const [movieInfo, setMovieInfo] = useState({});
   const [watchedMovies, setWatchedMovies] = useState([]);
   const [searchValue, setSearchValue] = useState("");
+  const [loading, setLoading] = useState(false);
 
   let movieApiKey;
 
@@ -29,7 +31,7 @@ export const App = () => {
     movieApiKey = process.env.REACT_APP_MOVIE_API_KEY_PRODUCTION;
   }
 
-  // Search Movies
+  // Search Movies section code
   const searchMovies = async (searchValue) => {
     const res = await axios.get(
       `https://www.omdbapi.com/?s=${searchValue}&apikey=${movieApiKey}`
@@ -45,14 +47,15 @@ export const App = () => {
     // eslint-disable-next-line
   }, [searchValue]);
 
-  // Remove from movies
+  // Remove from searched movies
   const removeMovie = (movie) => {
     const newMovieList = movies.filter((mov) => mov.imdbID !== movie.imdbID);
     setMovies(newMovieList);
   };
 
-  // Get movie info
+  // Get movie info section code
   const getMovieInfo = async (imdbID) => {
+    setLoading(true);
     const res = await axios.get(
       `https://www.omdbapi.com/?i=${imdbID}&apikey=${movieApiKey}`
     );
@@ -60,8 +63,11 @@ export const App = () => {
     if (res.data) {
       setMovieInfo(res.data);
     }
+
+    setLoading(false);
   };
 
+  // Movies Watch next section code
   // Get moviesWatchNext from local storage
   useEffect(() => {
     const moviesWatchNext = JSON.parse(
@@ -72,28 +78,10 @@ export const App = () => {
     }
   }, []);
 
-  // Get wachedMovies from local storage
-  useEffect(() => {
-    const watchedMovies = JSON.parse(
-      localStorage.getItem("react-movie-app-watchedMovies")
-    );
-    if (watchedMovies) {
-      setWatchedMovies(watchedMovies);
-    }
-  }, []);
-
   // Set moviesWatchNext to local storage
   const saveToLocalStorageMovieWatchNext = (items) => {
     localStorage.setItem(
       "react-movie-app-moviesWatchNext",
-      JSON.stringify(items)
-    );
-  };
-
-  // Set watchedMovies to local storage
-  const saveToLocalStorageWatchedMovies = (items) => {
-    localStorage.setItem(
-      "react-movie-app-watchedMovies",
       JSON.stringify(items)
     );
   };
@@ -110,6 +98,7 @@ export const App = () => {
       saveToLocalStorageMovieWatchNext(newMoviesWatchNextList);
     }
   };
+
   // Remove movieWatchNext
   const removeMovieWachtNext = (movie) => {
     const newMoviesWatchNextList = moviesWatchNext.filter(
@@ -118,6 +107,25 @@ export const App = () => {
 
     setMoviesWatchNext(newMoviesWatchNextList);
     saveToLocalStorageMovieWatchNext(newMoviesWatchNextList);
+  };
+
+  // Watched Movies section code
+  // Get wachedMovies from local storage
+  useEffect(() => {
+    const watchedMovies = JSON.parse(
+      localStorage.getItem("react-movie-app-watchedMovies")
+    );
+    if (watchedMovies) {
+      setWatchedMovies(watchedMovies);
+    }
+  }, []);
+
+  // Set watchedMovies to local storage
+  const saveToLocalStorageWatchedMovies = (items) => {
+    localStorage.setItem(
+      "react-movie-app-watchedMovies",
+      JSON.stringify(items)
+    );
   };
 
   // Add watchedMovies
@@ -228,6 +236,7 @@ export const App = () => {
                   {...props}
                   getmovieInfo={getMovieInfo}
                   movieInfo={movieInfo}
+                  loading={loading}
                 />
               )}
             />

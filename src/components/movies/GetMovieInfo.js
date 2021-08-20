@@ -1,5 +1,6 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
 
 export const GetMovieInfo = ({ imdbID }) => {
   return (
@@ -14,4 +15,8 @@ export const GetMovieInfo = ({ imdbID }) => {
       </Link>
     </Fragment>
   );
+};
+
+GetMovieInfo.propTypes = {
+  imdbId: PropTypes.string,
 };

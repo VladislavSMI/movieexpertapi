@@ -1,6 +1,7 @@
 import React from "react";
+import PropTypes from "prop-types";
 
-export const Search = ({searchValue, setSearchValue}) => {
+export const Search = ({ searchValue, setSearchValue }) => {
   return (
     <div>
       <input
@@ -8,8 +9,13 @@ export const Search = ({searchValue, setSearchValue}) => {
         name="text"
         placeholder="Search for movies..."
         value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}>
-      </input>
+        onChange={(e) => setSearchValue(e.target.value)}
+      ></input>
     </div>
   );
+};
+
+Search.propTypes = {
+  searchValue: PropTypes.string.isRequired,
+  setSearchValue: PropTypes.func.isRequired,
 };
